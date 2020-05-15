@@ -5,6 +5,7 @@ import com.example.chat.model.User;
 import com.example.chat.model.UserDto;
 import com.example.chat.repository.RoleRepository;
 import com.example.chat.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -17,16 +18,19 @@ import static com.example.chat.model.ERole.NORMAL;
 public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User registerUser(UserDto userDto) {
+        String hashPassword = passwordEncoder.encode(userDto.getPassword());
         User user = new User();
         user.setLogin(userDto.getLogin());
-        user.setPassword(userDto.getPassword());
+        user.setPassword(hashPassword);
         user.setEmail(userDto.getEmail());
 
         //test

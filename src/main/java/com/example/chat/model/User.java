@@ -23,7 +23,7 @@ public class User {
     private String login;
 
     @NotBlank
-    @Size(max = 100)
+    @Size(max = 60)
     private String password;
 
     @NotBlank
