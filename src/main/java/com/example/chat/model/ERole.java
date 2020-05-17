@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum ERole {
-    NORMAL,
+    NORMAL_USER,
     MODERATOR,
-    ADMIN,
+    ADMIN_USER,
     BLOCKED
 }

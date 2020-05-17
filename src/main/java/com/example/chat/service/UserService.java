@@ -1,18 +1,21 @@
 package com.example.chat.service;
 
+import com.example.chat.model.ERole;
 import com.example.chat.model.Role;
 import com.example.chat.model.User;
 import com.example.chat.model.UserDto;
 import com.example.chat.repository.RoleRepository;
 import com.example.chat.repository.UserRepository;
+import lombok.val;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.example.chat.model.ERole.ADMIN;
-import static com.example.chat.model.ERole.NORMAL;
+import static com.example.chat.model.ERole.ADMIN_USER;
+import static com.example.chat.model.ERole.NORMAL_USER;
 
 @Service
 public class UserService {
@@ -26,8 +29,10 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public User registerUser(UserDto userDto) {
         String hashPassword = passwordEncoder.encode(userDto.getPassword());
+
         User user = new User();
         user.setLogin(userDto.getLogin());
         user.setPassword(hashPassword);
@@ -35,11 +40,17 @@ public class UserService {
 
         //test
         Set<Role> roles = new HashSet<>();
-        roles.add(new Role(NORMAL));
-        roles.add(new Role(ADMIN));
-        roleRepository.saveAll(roles);
+        roles.add(getRole(NORMAL_USER));
+        roles.add(getRole(ADMIN_USER));
+
         user.setRoles(roles);
+        roleRepository.saveAll(roles);
 
         return userRepository.save(user);
+    }
+
+    private Role getRole(ERole eRole) {
+        val role = roleRepository.findRoleByRoleTypeName(eRole);
+        return role.orElseGet(() -> new Role(eRole));
     }
 }

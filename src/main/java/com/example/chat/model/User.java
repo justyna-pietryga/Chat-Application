@@ -1,6 +1,7 @@
 package com.example.chat.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -13,6 +14,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Table(name = "APP_USER", uniqueConstraints = {@UniqueConstraint(columnNames = "login"), @UniqueConstraint(columnNames = "email")})
 @Data
+@EqualsAndHashCode(exclude = {"roles"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
